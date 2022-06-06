@@ -2,14 +2,31 @@
 <html>
 <body>
 
-<input type="text" value="" id="url">
-<input type="submit" value="Go" onclick="goto()">
+    <input type="text" value="" id="url">
+    <input type="submit" value="Go" onclick="goto()">
+
+
+
 
 <script>
 
+
+var inputurl = document.getElementById("url");
+inputurl.addEventListener("keypress", function(){
+    function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            goto();
+        }
+    }
+});  
+
+
 function goto(){
-    window.location.href = document.getElementById("url").value;
+    window.location.href = inputurl.value;
 }
+
+
 
 </script>
 

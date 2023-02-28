@@ -1,0 +1,121 @@
+<html>
+  <body>
+    <div id="key_wraper">
+      <input id="apikeysave" type="text" placeholder="please keyin chatGPT APIkey">
+      <!-- <input type="submit" value="save" /> -->
+  </div>
+
+  <div id="output"></div>
+
+
+  <form id="myForm" action="https://api.openai.com/v1/completions" method="POST">
+    <label>
+      Your Query:
+      <textarea rows="2" name="name"></textarea>
+    </label>
+    <br />
+
+    <br />
+    <input type="submit" value="Submit" onclick="submitForm(event)" />
+  </form>
+
+
+  <script> 
+
+// var apiKey = "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"
+// const endpoint = "https://api.openai.com/v1/completions";
+
+const model = "text-davinci-003";
+const max_tokens = 4000
+const temperature = 0.5;
+
+
+    if (localStorage.getItem("apiKey")!==undefined){
+      document.querySelector("#key_wraper").remove
+
+    }
+
+
+
+  function submitForm(event) {
+    apiKey = document.querySelector("#apikeysave").value
+    localStorage.setItem("apiKey", apiKey);
+    document.querySelector("#key_wraper").remove
+    var Authorization = "Bearer "+ apiKey
+
+
+    const ask_text = document.querySelector('#myForm>label>textarea').value
+
+    event.preventDefault(); // prevent the default form submission
+
+    const form = document.getElementById('myForm');
+    const formData = new FormData(form);
+
+    const headers = new Headers({
+      "Content-Type": "application/json",
+      "Authorization": Authorization
+    });
+
+    const body = JSON.stringify({
+        model: model,
+        prompt: ask_text,
+        max_tokens: max_tokens,
+        n: 1,
+        temperature: temperature,
+      });
+
+
+    fetch(form.action, {
+      method: 'POST',
+      headers: headers,
+      body: body,
+    })
+    .then(response => response.text())
+    .then(data => {
+      console.log(data)
+
+      data = JSON.parse(data);
+
+      data = data.choices[0].text;
+    
+    // Get the answer - i.e. output
+      const outputDiv = document.getElementById('output');
+      var q_el = document.createElement("p")
+      q_el.textContent = ask_text
+      var a_el = document.createElement("div")
+      a_el.textContent = data
+      outputDiv.appendChild(q_el)
+      outputDiv.appendChild(a_el)
+
+      
+    })
+    .catch(error => {
+      console.error(error);
+    });
+  }
+  </script>
+  <style>
+
+  label > textarea{
+    width: 100%
+  }
+  div#output > div {
+      background: #cfffcf;
+      padding: 10px;
+  }
+
+  div#output > p {
+      background: azure;
+      padding: 10px;
+      margin: 5px;
+  }
+  div#output {
+      background: aliceblue;
+      padding: 1rem;
+  }
+  </style>
+
+
+
+  </body>
+</html>
